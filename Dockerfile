@@ -9,7 +9,10 @@ RUN apt-get update && apt-get install -y \
     bzip2 \
     libx11-6 \
     wget \
- && rm -rf /var/lib/apt/lists/*
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm -rf /usr/local/src/*
 
 # Set up UID not to use root in Container
 ARG UID
