@@ -12,4 +12,5 @@ services:
         volumes:
             - ./src:/src
             - ./res:/res
-        command: python /src/main.py ex_name=assignment1 model=convnet,resnet,lenet,fcn num_data=1000,60000 -m 
+        # command: python /src/main.py ex_name=assignment1 model=convnet,resnet,lenet,fcn num_data=1000,60000 -m 
+        command: python /src/main.py ex_name=assignment2 model=lenet num_data=1000 transforms.kwargs.affine=false,true transforms.kwargs.normalize=true,false transforms.kwargs.rotate=true,false -m
