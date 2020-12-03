@@ -11,16 +11,6 @@ RUN apt-get update && apt-get install -y \
     wget \
  && rm -rf /var/lib/apt/lists/*
 
-# Create a working directory
-# RUN mkdir /app
-# WORKDIR /app
-
-# Create a non-root user and switch to it
-# RUN adduser --disabled-password --gecos '' --shell /bin/bash user \
- # && chown -R user:user /app
-# RUN echo "user ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/90-user
-# USER user
-
 # Set up UID not to use root in Container
 ARG UID
 ARG GID
@@ -32,20 +22,6 @@ ENV UNAME ${UNAME}
 
 RUN groupadd -g ${GID} ${UNAME}
 RUN useradd -u ${UID} -g ${UNAME} -m ${UNAME}
-
-# All users can use /home/user as their home directory
-# ENV HOME=/home/user
-# RUN chmod 777 /home/user
-
-# Install Miniconda and Python 3.6
-# ENV CONDA_AUTO_UPDATE_CONDA=false
-# ENV PATH=/home/user/miniconda/bin:$PATH
-# RUN curl -sLo ~/miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh \
- # && chmod +x ~/miniconda.sh \
- # && ~/miniconda.sh -b -p ~/miniconda \
- # && rm ~/miniconda.sh \
- # && conda install -y python==3.8 \
- # && conda clean -ya
 
 ENV CONDA_DIR /opt/conda
 ENV PATH ${CONDA_DIR}/bin:${PATH}
