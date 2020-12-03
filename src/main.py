@@ -1,6 +1,7 @@
 import models
 import solver
 import dataloader
+import preprocess
 
 import torch
 from torch.utils.data import DataLoader
@@ -50,22 +51,23 @@ def main(cfg):
         net = models.get_model(cfg.net.name, **cfg.net.kwargs)
         logger.info(net)
 
-        transforms = torchvision.transforms.Compose([
-            torchvision.transforms.ToTensor()
-            ])
+        # val_transforms = torchvision.transforms.Compose([
+        #     torchvision.transforms.ToTensor()
+        #     ])
+        train_transforms, val_transforms = preprocess.get_transform(**cfg.transforms.kwargs)
         # train = datasets.MNIST("../data", train=True, download=True, transform=transforms)
         # test = datasets.MNIST("../data", train=False, transform=transforms)
 
-        train = dataloader.MyMNIST(root="../data", train=True, download=True, transform=transforms,
+        train = dataloader.MyMNIST(root="../data", train=True, download=True, transform=train_transforms,
                 limit_data=[0,cfg.num_data])
 
-        val = dataloader.MyMNIST(root="../data", train=True, download=True, transform=transforms,
+        val = dataloader.MyMNIST(root="../data", train=True, download=True, transform=val_transforms,
                 limit_data=[cfg.num_data, -1])
 
-        test = dataloader.MyMNIST(root="../data", train=False, download=True, transform=transforms,)
+        test = dataloader.MyMNIST(root="../data", train=False, download=True, transform=val_transforms,)
 
         train_dataloader = DataLoader(train, **cfg.dataloader.kwargs,)
-        val_dataloader = DataLoader(train, **cfg.dataloader.kwargs,)
+        val_dataloader = DataLoader(val, **cfg.dataloader.kwargs,)
         test_dataloader = DataLoader(test, **cfg.dataloader.kwargs,)
 
         optimizer = getattr(torch.optim, cfg.optim.name)(net.parameters(), **cfg.optim.kwargs)
