@@ -42,7 +42,7 @@ class Solver:
             for idx, (image, ans) in enumerate(self.test_dataloader):
                 # ans = nn.functional.one_hot(ans, num_classes=10).type(torch.LongTensor)
                 image, ans = image.to(self.device), ans.to(self.device)
-                out = self.net(image)
+                out = self.best_net(image)
                 loss = self.lossfunc(out, ans)
                 test_loss += loss.sum().item()
                 test_acc += self._get_acc(out, ans)
@@ -59,8 +59,12 @@ class Solver:
         return correct
 
     def train(self):
+        best_loss = 1000
         for epoch in range(self.epochs):
             res = self._train_epoch()
+            val_loss = res["val_loss"]
+            if best_loss > val_loss:
+                self.best_net = self.net
             self.logger.info("epoch: {} train loss :{:.4f}".format(epoch, res["train_loss"]))
             self.logger.info("epoch: {} train acc: {:.4f}".format(epoch, res["train_acc"]))
             self.logger.info("epoch: {} val loss: {:.4f}".format(epoch, res["val_loss"]))
